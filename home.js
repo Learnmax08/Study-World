@@ -2,27 +2,25 @@
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js';
 import { getFirestore, doc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js';
 
-// දැනටමත් ඔයා index.html එකේ initialize කරලා තියෙන Firebase App එක මේ ෆයිල් එකටත් සම්බන්ධ වෙනවා
 const auth = getAuth();
 const db = getFirestore();
 
-// යූසර් index.html එකෙන් සාර්ථකව ලොග් වෙලා home.html එකට ආපු සැණින් මේක ක්‍රියාත්මක වෙනවා
+// යූසර් හෝම් පේජ් එකට ආපු ගමන් මේ සෙලෙක්ෂන් එක රන් වෙනවා
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
+            // Cloud Firestore එකේ 'users' කලෙක්ෂන් එක ඇතුලේ ඉන්න අදාල user.uid එක තියෙන ඩොකියුමන්ට් එක ගන්නවා
             const userDocRef = doc(db, 'users', user.uid);
             
-            // Firestore එකේ අදාළ යූසර්ගේ ID එක ඇතුලට දත්ත යවනවා
+            // ලොගින් වෙලාව සහ ලොගින් ගණන Cloud Firestore එකට ලස්සනට යාවත්කාලීන කරනවා
             await updateDoc(userDocRef, {
-                'last_login': new Date().toLocaleString(), // ලොග් වුණු දිනය සහ වෙලාව
-                'login_count': increment(1) // දැනට තියෙන ගණනට 1 ක් එකතු කරනවා (Auto +1)
+                'last_login': new Date().toLocaleString(),
+                'login_count': increment(1)
             });
             
-            console.log("User active session & login count tracked successfully on Home Page!");
+            console.log("User login tracking data saved successfully to Cloud Firestore!");
         } catch (error) {
             console.error("Tracking Error on Home Page: ", error);
         }
-    } else {
-        console.log("No user is signed in on home page.");
     }
 });
