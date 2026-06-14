@@ -16,6 +16,11 @@
             justify-content: center;
             align-items: center;
             color: white;
+            /* පිටුවේ ඇති අකුරු සහ පින්තූර Highlight/Select කිරීම වැළැක්වීමට (CSS Protection) */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         .form-container {
             max-width: 320px;
@@ -103,10 +108,45 @@
         </div>
     </div>
 
+    <script>
+        // 1. Right-Click මෙනු එක බ්ලොක් කිරීම
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 2. F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U වැනි කෙටිමං බ්ලොක් කිරීම
+        document.addEventListener('keydown', function(e) {
+            // F12 key
+            if (e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + I (Inspect)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + J (Console)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + U (View Source)
+            if (e.ctrlKey && e.keyCode === 85) {
+                e.preventDefault();
+                return false;
+            }
+            // Ctrl + Shift + C (Element Select)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // 🌟 updateDoc, increment, serverTimestamp මෙතනට Import කරගත්තා
         import { getFirestore, doc, setDoc, updateDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -153,7 +193,7 @@
             }
         });
 
-        // LOG IN PROCESS (🌟 ට්‍රැකර් එක ඇතුළත් කර යාවත්කාලීන කරන ලදී)
+        // LOG IN PROCESS
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -163,14 +203,13 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // 🚀 ශිෂ්‍යයා සාර්ථකව Login වූ පසු Firestore දත්ත Update කරන කොටස
+                // ශිෂ්‍යයා සාර්ථකව Login වූ පසු Firestore දත්ත Update කරන කොටස
                 const userRef = doc(db, "users", user.uid);
                 await updateDoc(userRef, {
-                    lastLogin: serverTimestamp(),  // වත්මන් වේලාව සහ දිනය
-                    loginCount: increment(1)       // පරණ වාර ගණනට 1ක් එකතු කරයි
+                    lastLogin: serverTimestamp(),  
+                    loginCount: increment(1)       
                 });
 
-                // සාර්ථකව ලොග් වුණොත් විතරක් home.html එකට යවයි
                 window.location.href = "home.html";
             } catch (error) {
                 alert("Login Failed: " + error.message);
