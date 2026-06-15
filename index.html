@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,11 +12,14 @@
             margin: 0;
             padding: 0;
             font-family: sans-serif;
-            background: url('nature.jpeg') no-repeat center center fixed;
-            background-size: cover;
+            
+            /* ඔයා ඉල්ලපු ලස්සන ලා දම් පාට (Light Purple / Lavender) Gradient පසුබිම */
+            background: linear-gradient(135deg, #d1c4e9, #b39ddb, #7e57c2);
+            
             justify-content: center;
             align-items: center;
-            color: white;
+            color: #333; /* ලා පැහැති පසුබිමේ අකුරු හොඳින් පෙනීමට තද පැහැයක් යොදා ඇත */
+            
             /* පිටුවේ ඇති අකුරු සහ පින්තූර Highlight/Select කිරීම වැළැක්වීමට (CSS Protection) */
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -26,12 +30,12 @@
             max-width: 320px;
             width: 100%;
             padding: 40px;
-            box-shadow: 0 0 15px black;
-            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.45); /* Glassmorphism පෙනුම ලබා ගැනීමට සුදු පැහැය මදක් අඩු කර ඇත */
             border-radius: 30px;
             text-align: center;
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         .form-header h3 {
             text-align: center;
@@ -41,33 +45,36 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 0;
+            color: #4a148c; /* Dashboard එකේ දම් පාටට ගැලපෙන Header වර්ණය */
         }
         .input-container input {
             padding: 15px 20px;
             width: 100%;
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
             outline: none;
-            color: white;
+            color: #333;
             box-sizing: border-box;
         }
-        input::placeholder { color: rgba(255, 255, 255, 0.8); font-size: 0.85rem; }
+        input::placeholder { color: #757575; font-size: 0.85rem; }
         .submit {
             width: 100%; padding: 15px; border-radius: 30px; border: 0;
-            margin-bottom: 20px; font-weight: 900; background: white;
-            cursor: pointer; color: black; text-transform: uppercase;
+            margin-bottom: 20px; font-weight: 900; 
+            background: #7c4dff; /* Button එක සඳහා කැපී පෙනෙන දම් පැහැයක් */
+            cursor: pointer; color: white; text-transform: uppercase;
             transition: 0.3s ease;
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
         }
         .submit:hover {
-            background: #e0e0e0;
+            background: #651fff;
             transform: scale(1.02);
         }
-        .signup { text-align: center; font-size: 14px; color: #ddd; }
-        .signup a { text-decoration: none; color: white; font-weight: bold; text-decoration: underline; }
+        .signup { text-align: center; font-size: 14px; color: #555; }
+        .signup a { text-decoration: none; color: #4a148c; font-weight: bold; text-decoration: underline; }
         
         .page-section { display: none; }
         .page-section.active { display: flex; justify-content: center; align-items: center; width: 100%; }
@@ -116,27 +123,22 @@
 
         // 2. F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U වැනි කෙටිමං බ්ලොක් කිරීම
         document.addEventListener('keydown', function(e) {
-            // F12 key
             if (e.keyCode === 123) {
                 e.preventDefault();
                 return false;
             }
-            // Ctrl + Shift + I (Inspect)
             if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
                 e.preventDefault();
                 return false;
             }
-            // Ctrl + Shift + J (Console)
             if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
                 e.preventDefault();
                 return false;
             }
-            // Ctrl + U (View Source)
             if (e.ctrlKey && e.keyCode === 85) {
                 e.preventDefault();
                 return false;
             }
-            // Ctrl + Shift + C (Element Select)
             if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
                 e.preventDefault();
                 return false;
@@ -203,7 +205,6 @@
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // ශිෂ්‍යයා සාර්ථකව Login වූ පසු Firestore දත්ත Update කරන කොටස
                 const userRef = doc(db, "users", user.uid);
                 await updateDoc(userRef, {
                     lastLogin: serverTimestamp(),  
